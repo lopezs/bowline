@@ -14,8 +14,13 @@ db:
   dns:
     - 8.8.8.8
     - 8.8.4.4
+solr:
+  image: lopezs/drupal-solr
+  hostname: solrhost
+  expose:
+    - "8983"
 web:
-  image: davenuman/bowline-web-php:latest
+  image: lopezs/bowline-web-php:latest
   command: /start.sh
   environment:
     - COMPOSER_HOME=/.composer
@@ -26,6 +31,7 @@ web:
     - .:/var/www
   links:
     - db:dbhost
+    - solr:solrhost
   hostname: drupal
   dns:
     - 8.8.8.8
