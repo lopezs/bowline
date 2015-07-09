@@ -20,3 +20,7 @@ $databases['default']['default'] = array(
 $conf['file_private_path'] = '/var/www/files-private';
 $conf['file_public_path'] = 'sites/default/files';
 $conf['file_temporary_path'] = '/tmp';
+
+// Solr
+$conf['apachesolr_environments']['solr']['url'] = 'http://solrhost:8983/solr';
+$conf['apachesolr_attachments_tika_path'] = '/var/www/docroot/tika';
