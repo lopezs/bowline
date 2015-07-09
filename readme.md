@@ -28,6 +28,7 @@ Start a new git repo then add bowline as a remote. Change myproject to the name 
 ```bash
 mkdir myproject
 cd myproject
+mkdir docroot (this is where Drupal is installed)
 git init
 git remote add bowline git@github.com:lopezs/bowline.git
 git remote update
@@ -57,7 +58,7 @@ build
 ```
 This will build the containers and can take a long time.
 
-Install Drupal and login:
+Install Drupal (in myproject/docroot) and login:
 ```
 settings_init
 drush si --sites-subdir=default
