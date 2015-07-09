@@ -16,4 +16,8 @@ chown -R --silent www-data:www-data /var/www
 echo Using the following user for running apache:
 id www-data
 
-/etc/apache2/foreground.sh
+##
+# Supervisord.
+##
+
+supervisord -n -c /etc/supervisor/conf.d/supervisord.conf

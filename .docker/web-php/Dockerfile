@@ -4,7 +4,7 @@
 #
 
 FROM debian:wheezy
-MAINTAINER David Numan <david.numan@civicactions.com>
+MAINTAINER Lopez Shackleford <lopez.shackleford@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -12,12 +12,21 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -sf /bin/true /sbin/initctl
 
+
 # Packages.
-RUN apt-get update && \
-  apt-get -y install git mysql-client apache2 libapache2-mod-php5 wget curl \
+RUN apt-get update
+
+# Install Mailcatcher
+RUN apt-get install -y ruby ruby-dev sqlite3 libsqlite3-dev binutils build-essential bzip2 cpp dpkg-dev fakeroot g++ make
+RUN gem install mailcatcher
+
+RUN apt-get -y --force-yes install git mysql-client supervisor apache2 libapache2-mod-php5 wget curl \
     php5-curl php5-gd php5-mysql php5-sqlite php5-pgsql php-apc php-pear php5-xdebug \
-    pwgen sudo python-setuptools nano apt-utils tidy vim pv && \
-  apt-get autoclean && apt-get autoremove
+    pwgen sudo python-setuptools nano apt-utils tidy vim pv openjdk-7-jre-headless
+
+RUN apt-get remove -y build-essential && \
+    apt-get autoclean && apt-get autoremove && \
+    rm -rf /var/lib/apt/lists
 
 # whitelist = phar
 RUN \
@@ -37,17 +46,19 @@ RUN echo %sudo	ALL=NOPASSWD: ALL >> /etc/sudoers
 
 # Scripts.
 ADD ./conf/scripts/start.sh /start.sh
-ADD ./conf/scripts/foreground.sh /etc/apache2/foreground.sh
 
 # Apache.
 RUN rm -rf /var/www/*
-RUN chmod 755 /etc/apache2/foreground.sh
+#RUN chmod 755 /etc/apache2/foreground.sh
 
 # Apache / PHP.
 ADD ./conf/apache2/vhost.conf /etc/apache2/sites-available/default
 ADD ./conf/php5/apache2.ini /etc/php5/apache2/php.ini
 ADD ./conf/php5/cli.ini /etc/php5/cli/php.ini
 ADD ./conf/php5/apc.ini /etc/php5/conf.d/apc.ini
+
+# Supervisor
+ADD ./conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Drupal.
 ADD ./conf/drupal/settings.docker.php /etc/settings.docker.php
@@ -60,7 +71,7 @@ RUN \
   echo xdebug.max_nesting_level=256 >> /etc/php5/mods-available/xdebug.ini && \
   echo xdebug.remote_log=/var/www/logs/xdebug.log >> /etc/php5/mods-available/xdebug.ini
 
-EXPOSE 80
+EXPOSE 80 1080 1025
 
-# Start apache.
+# Start  file
 RUN chmod 755 /start.sh
