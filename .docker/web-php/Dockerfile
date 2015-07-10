@@ -49,7 +49,6 @@ ADD ./conf/scripts/start.sh /start.sh
 
 # Apache.
 RUN rm -rf /var/www/*
-#RUN chmod 755 /etc/apache2/foreground.sh
 
 # Apache / PHP.
 ADD ./conf/apache2/vhost.conf /etc/apache2/sites-available/default
