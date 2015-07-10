@@ -121,7 +121,7 @@ You may have noticed when running the `bowline` command that there is a section 
 ``` bash
 invoke_proxy
 ```
-This will create and start an nginx container linked to a dnsmasq container. After they start it will add the web IP address and the project name to the dns container. The nginx proxy then uses that dns for finding your site and servers it as {projectname}.localtest.me (for example https://myproject.localtest.me/). Once the proxy is active, bowline is aware of it when using the `bowine` or `drush` commands:
+This will create and start an nginx container linked to a dnsmasq container. After they start it will add the web IP address and the project name to the dns container. The nginx proxy then uses that dns for finding your site and servers it as {projectname}.local.dev (for example https://myproject.local.dev/). Once the proxy is active, bowline is aware of it when using the `bowine` or `drush` commands:
 ``` bash
 bowline
 drush st

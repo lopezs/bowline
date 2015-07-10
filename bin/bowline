@@ -17,7 +17,7 @@ done | column -t -s ","
 echo "Proxy:"
 check_proxy
 if [ "$PROXY_HOST_SET" ];then
-  echo -e "\thttp://${BOWLINE}.localtest.me/"
+  echo -e "\thttp://${BOWLINE}.local.dev/"
 else
   echo -e "\tNot active. (use 'invoke_proxy' to start)"
 fi
