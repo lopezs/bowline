@@ -12,20 +12,53 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -sf /bin/true /sbin/initctl
 
-
 # Packages.
 RUN apt-get update
 
+RUN apt-get -y --force-yes install \
+  apache2 \
+  apt-utils \
+  curl \
+  git \
+  libapache2-mod-php5 \
+  mysql-client \
+  openjdk-7-jre-headless \
+  php5-curl \
+  php5-gd \
+  php5-mysql \
+  php5-sqlite \
+  php5-pgsql \
+  php-apc \
+  php-pear \
+  php5-xdebug \
+  pv \
+  pwgen \
+  python-setuptools \
+  sudo \
+  supervisor \
+  tidy \
+  vim \
+  wget
+
 # Install Mailcatcher
-RUN apt-get install -y ruby ruby-dev sqlite3 libsqlite3-dev binutils build-essential bzip2 cpp dpkg-dev fakeroot g++ make
+RUN apt-get install -y \
+  binutils \
+  build-essential \
+  bzip2 \
+  cpp \
+  dpkg-dev \
+  fakeroot \
+  g++ \
+  libsqlite3-dev \
+  make \
+  ruby \
+  ruby-dev \
+  sqlite3
+
 RUN gem install mailcatcher
 
-RUN apt-get -y --force-yes install git mysql-client supervisor apache2 libapache2-mod-php5 wget curl \
-    php5-curl php5-gd php5-mysql php5-sqlite php5-pgsql php-apc php-pear php5-xdebug \
-    pwgen sudo python-setuptools nano apt-utils tidy vim pv openjdk-7-jre-headless
-
-RUN apt-get remove -y build-essential && \
-    apt-get autoclean && apt-get autoremove && \
+RUN apt-get remove -y build-essential libsqlite3-dev ruby-dev && \
+    apt-get autoclean && \
     rm -rf /var/lib/apt/lists
 
 # whitelist = phar
@@ -45,22 +78,22 @@ RUN a2enmod rewrite php5
 RUN echo %sudo	ALL=NOPASSWD: ALL >> /etc/sudoers
 
 # Scripts.
-ADD ./conf/scripts/start.sh /start.sh
+COPY ./conf/scripts/start.sh /start.sh
 
 # Apache.
 RUN rm -rf /var/www/*
 
 # Apache / PHP.
-ADD ./conf/apache2/vhost.conf /etc/apache2/sites-available/default
-ADD ./conf/php5/apache2.ini /etc/php5/apache2/php.ini
-ADD ./conf/php5/cli.ini /etc/php5/cli/php.ini
-ADD ./conf/php5/apc.ini /etc/php5/conf.d/apc.ini
+COPY ./conf/apache2/vhost.conf /etc/apache2/sites-available/default
+COPY ./conf/php5/apache2.ini /etc/php5/apache2/php.ini
+COPY ./conf/php5/cli.ini /etc/php5/cli/php.ini
+COPY ./conf/php5/apc.ini /etc/php5/conf.d/apc.ini
 
 # Supervisor
-ADD ./conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Drupal.
-ADD ./conf/drupal/settings.docker.php /etc/settings.docker.php
+COPY ./conf/drupal/settings.docker.php /etc/settings.docker.php
 
 # Xdebug settings.
 RUN \
