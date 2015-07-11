@@ -1,6 +1,6 @@
 # Docker for Drupal development and testing
 
-forked from https://github.com/davenuman/bowline
+forked from [forked from https://github.com/davenuman/bowline](https://github.com/davenuman/bowline)
 
 ## Requirements
 1. [Docker](https://www.docker.com/)
@@ -165,6 +165,38 @@ Thus, you can easily install the pieces you need for your project. Each hoisting
 ### Creating a Rigging
 Riggings are simply a directory with a rigging_name.hoist bash script. A good example is the [behat rigging](lib/rigging/behat). The [behat.hoist](lib/rigging/behat/behat.hoist) script runs a composer command and copies a file to the bin directory, which may be typical processes of other possible riggings.
 
+## Drush
+Note the original bowline method for running drush is renamed 'brush'.
+
+drush is now run locally accessing the container via a drush alias 
+
+SSH keys are required for this to work.
+
+Copy your local ssh public key to **/root/.ssh/authorized_keys** in the container
+
+If available to you, the `ssh-copy-id' id the easiest way to do this:
+```bash
+ssh-copy-id root@myproject.local.dev
+```
+You should be prompted for the password (which is 'root')
+
+Verify that you can SSH into the container without a password
+
+```bash
+ssh root@myproject.local.dev
+```
+
+Add a local aliases file e.g **~/.drush/docker.aliases.drushrc.php**
+ 
+```php
+<?php
+$aliases['lopezs-drupal'] = array(
+  'root' => '/var/www/docroot',
+  'remote-user' => 'root',
+  'remote-host' => 'myproject.local.dev',
+  'ssh-options' => '-p 22', 
+);
+```
 
 ## Contributing
 

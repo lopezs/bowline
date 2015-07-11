@@ -23,6 +23,7 @@ RUN apt-get -y --force-yes install \
   libapache2-mod-php5 \
   mysql-client \
   openjdk-7-jre-headless \
+	openssh-server \
   php5-curl \
   php5-gd \
   php5-mysql \
@@ -71,6 +72,13 @@ RUN \
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin -d detect_unicode=0 && \
   ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
+
+# Install Drush 7.
+RUN composer global require drush/drush:7.*
+RUN composer global update
+# Unfortunately, adding the composer vendor dir to the PATH doesn't seem to work. So:
+RUN ln -s /root/.composer/vendor/bin/drush /usr/local/bin/drush
+
 # Enable a2enmod rewrite
 RUN a2enmod rewrite php5
 
@@ -103,7 +111,15 @@ RUN \
   echo xdebug.max_nesting_level=256 >> /etc/php5/mods-available/xdebug.ini && \
   echo xdebug.remote_log=/var/www/logs/xdebug.log >> /etc/php5/mods-available/xdebug.ini
 
-EXPOSE 80 1080 1025
+
+# Setup SSH.
+RUN echo 'root:root' | chpasswd
+RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN mkdir /var/run/sshd && chmod 0755 /var/run/sshd
+RUN mkdir -p /root/.ssh/ && touch /root/.ssh/authorized_keys
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+
+EXPOSE 80 1080 1025 22
 
 # Start  file
 RUN chmod 755 /start.sh

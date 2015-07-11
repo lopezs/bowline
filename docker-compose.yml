@@ -27,6 +27,7 @@ web:
   expose:
     - "80"
     - "9000"
+    - "22"
   volumes:
     - .:/var/www
   links:
