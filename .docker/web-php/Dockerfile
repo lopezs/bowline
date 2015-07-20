@@ -12,11 +12,19 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -sf /bin/true /sbin/initctl
 
+# Install utils
+RUN apt-get update && apt-get -y install wget curl
+
+# ADD PHP 5.6 Repo
+RUN \
+  wget -O - http://www.dotdeb.org/dotdeb.gpg | apt-key add - && \
+  echo "deb http://packages.dotdeb.org wheezy-php56 all" > /etc/apt/sources.list.d/dotdeb.list && \
+  echo "\ndeb-src http://packages.dotdeb.org wheezy-php56 all" >> /etc/apt/sources.list.d/dotdeb.list
+
 # Packages.
 RUN apt-get update && apt-get -y --force-yes install \
   apache2 \
   apt-utils \
-  curl \
   git \
   libapache2-mod-php5 \
   mysql-client \
@@ -27,13 +35,7 @@ RUN apt-get update && apt-get -y --force-yes install \
   sudo \
   supervisor \
   tidy \
-  vim \
-  wget
-
-# ADD PHP 5.6 Repo
-RUN echo "deb http://packages.dotdeb.org wheezy-php56 all" >> /etc/apt/sources.list.d/dotdeb.list
-RUN echo "deb-src http://packages.dotdeb.org wheezy-php56 all" >> /etc/apt/sources.list.d/dotdeb.list
-RUN sudo wget http://www.dotdeb.org/dotdeb.gpg -O- | sudo apt-key add -
+  vim
 
 # Install PHP
 RUN apt-get update && apt-get install -y \
