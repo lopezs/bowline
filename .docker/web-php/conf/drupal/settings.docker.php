@@ -14,6 +14,14 @@ $databases['default']['default'] = array(
   'password' => 'dbpass',
   'host' => 'dbhost',
 );
+
+/**
+ * Ensure we know when we are running on HTTPS.
+ */
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+  $_SERVER['HTTPS'] = 'on';
+}
+
 // Set the host to the proxied container IP.
 // $base_url = 'http://projectname';
 // Set file system paths.

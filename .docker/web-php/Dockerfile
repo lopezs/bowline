@@ -80,7 +80,7 @@ RUN \
   ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
 # Enable a2enmod rewrite
-RUN a2enmod rewrite php5
+RUN a2enmod rewrite php5 ssl
 
 # Sudo.
 RUN echo %sudo	ALL=NOPASSWD: ALL >> /etc/sudoers
@@ -93,8 +93,18 @@ RUN rm -rf /var/www/*
 
 # Apache / PHP.
 COPY ./conf/apache2/vhost.conf /etc/apache2/sites-available/default
+COPY ./conf/apache2/vhost-ssl.conf /etc/apache2/sites-available/default-ssl
 COPY ./conf/php5/apache2.ini /etc/php5/apache2/php.ini
 COPY ./conf/php5/cli.ini /etc/php5/cli/php.ini
+
+# SSL cert - NOT for production!
+COPY ./conf/apache2/localcerts/apache.key /etc/ssl/localcerts/apache.key
+COPY ./conf/apache2/localcerts/apache.pem /etc/ssl/localcerts/apache.pem
+RUN chmod 600 /etc/ssl/localcerts/apache*
+
+# Enable ssl module and site
+RUN a2ensite default-ssl && a2enmod ssl
+RUN mkdir -p /var/run/apache2
 
 # Supervisor
 COPY ./conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -110,7 +120,7 @@ RUN \
   echo xdebug.max_nesting_level=256 >> /etc/php5/mods-available/xdebug.ini && \
   echo xdebug.remote_log=/var/www/logs/xdebug.log >> /etc/php5/mods-available/xdebug.ini
 
-EXPOSE 80 1080 1025
+EXPOSE 80 443 1080 1025
 
 # Start  file
 RUN chmod 755 /start.sh
