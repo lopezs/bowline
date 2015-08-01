@@ -9,8 +9,13 @@ echo "Containers: "
 for c in $containers;do
   ip_var="${c}_ip"
   port_raw="$(docker inspect --format='{{.NetworkSettings.Ports}}' ${!c}|grep 80)"
+  port_solr="$(docker inspect --format='{{.NetworkSettings.Ports}}' ${!c}|grep 8983)"
+  port_mailcatcher="$(docker inspect --format='{{.NetworkSettings.Ports}}' ${!c}|grep 1080)"
+ # echo "port_mailcatcher = $port_mailcatcher"
   [ "$port_raw" ] && link=",http://${!ip_var}/"
-  echo "$c,~,${!ip_var}${link}"
+  [ "$port_solr" ] && link=",http://${!ip_var}:8983/solr/"
+  [ "$port_mailcatcher" ] && linkmc=" ~ (Mailcatcher) http://${!ip_var}:1080/"
+  echo "$c,~,${!ip_var}${link}${linkmc}"
   unset link
 done | column -t -s ","
 
