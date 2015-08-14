@@ -1,5 +1,5 @@
 #
-# PHP 5.6
+# PHP 5.5
 # - also includes Apache, Composer, Drupal configuration
 #
 
@@ -15,11 +15,11 @@ RUN ln -sf /bin/true /sbin/initctl
 # Install utils
 RUN apt-get update && apt-get -y install wget curl
 
-# ADD PHP 5.6 Repo
+# ADD PHP 5.5 Repo
 RUN \
   wget -O - http://www.dotdeb.org/dotdeb.gpg | apt-key add - && \
-  echo "deb http://packages.dotdeb.org wheezy-php56 all" > /etc/apt/sources.list.d/dotdeb.list && \
-  echo "\ndeb-src http://packages.dotdeb.org wheezy-php56 all" >> /etc/apt/sources.list.d/dotdeb.list
+  echo "deb http://packages.dotdeb.org wheezy-php55 all" > /etc/apt/sources.list.d/dotdeb.list && \
+  echo "\ndeb-src http://packages.dotdeb.org wheezy-php55 all" >> /etc/apt/sources.list.d/dotdeb.list
 
 # Packages.
 RUN apt-get update && apt-get -y --force-yes install \
