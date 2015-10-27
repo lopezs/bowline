@@ -469,7 +469,7 @@
 
     <!-- trie dates are preferred, so give them the 2 letter prefix -->
     <dynamicField name="ds_*"  type="tdate"   indexed="true"  stored="true" multiValued="false"/>
-    <dynamicField name="dm_*"  type="tdate"   indexed="true"  stored="true" multiValued="true"/>
+    <dynamicField name="dm_*"  type="tdate"   indexed="true"  stored="true" multiValued="false"/>
     <dynamicField name="its_*" type="tlong"   indexed="true"  stored="true" multiValued="false"/>
     <dynamicField name="itm_*" type="tlong"   indexed="true"  stored="true" multiValued="true"/>
     <dynamicField name="fts_*" type="tfloat"  indexed="true"  stored="true" multiValued="false"/>
